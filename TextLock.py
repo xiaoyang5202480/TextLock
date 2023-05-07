@@ -1,9 +1,9 @@
 from cryptography.fernet import Fernet 
 from tkinter import *
 from tkinter import messagebox
-import os
+# import os
 
-version="v0.1.2"
+version="v0.1.3"
 ZuoZhe="xiaoyang5202480"
 
 #语言文件
@@ -16,7 +16,11 @@ zh_cn={
     "decrypt":"请输入你想要解密的文字",
     "decrypt_done":"解密完成！\n加密后的文字在text.txt",
     "decrypt_key":"请输入这段文字的解密秘钥",
-    "ZuoZhe":"作者：{}"
+    "ZuoZhe":"作者：{}",
+    "title":"文字加密器",
+    "error_title":"错误",
+    "error1":"解密失败！\n您可能没有输入正确的秘钥",
+    "error2":"解密失败！\n您可能没有输入正确的加密文字！"
 }
 
 #自定义函数
@@ -34,13 +38,19 @@ def JiaMi():
     messagebox.showinfo(zh_cn["tip"],zh_cn["done"])
 
 
-def JieMi():
+def JieMi():    
     key2=v3.get()
-    bytes_key2=key2.encode()
-    f2=Fernet(bytes_key2)
-    decrypt_data=v2.get()
-    bytes_decrypt_data=decrypt_data.encode()
-    decrypted_data = f2.decrypt(bytes_decrypt_data)
+    try:
+        bytes_key2=key2.encode()
+        f2=Fernet(bytes_key2)
+    except:
+        messagebox.showerror(zh_cn["error_title"],zh_cn["error1"])
+    try:
+        decrypt_data=v2.get()
+        bytes_decrypt_data=decrypt_data.encode()
+        decrypted_data = f2.decrypt(bytes_decrypt_data)
+    except:
+        messagebox.showerror(zh_cn["error_title"],zh_cn["error2"])
     with open(r"text.txt","w") as t3:
         t3.write(decrypted_data.decode("utf-8"))
     messagebox.showinfo(zh_cn["tip"],zh_cn["decrypt_done"])
@@ -50,7 +60,7 @@ def JieMi():
 #制作GUI
 root=Tk()
 root.geometry("500x400")
-root.title("文字加密器")
+root.title(zh_cn["title"])
 #root.iconphoto(file=r"") #设置窗口图标
 
 label1=Label(root,text=zh_cn["input"])
